@@ -30,7 +30,9 @@ export default function Navbar() {
 
   async function getProducts() {
     try {
-      const { data } = await axios.get("https://egzone.runasp.net/api/Products");
+      const { data } = await axios.get(
+        "https://egzone.runasp.net/api/Products"
+      );
       setProducts(data?.data || data || []);
     } catch {
       setProducts([]);
@@ -58,7 +60,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* NAVBAR */}
       <div className={styles.navbar}>
         {/* LOGO */}
         <Link to="/">
@@ -101,58 +102,74 @@ export default function Navbar() {
           </div>
         )}
 
-            {/* ICONS DESKTOP */}
-      <div className={styles.icons}>
-        {[
-          { icon: <FaBell />, link: "/bell" },
-          { icon: <FaShoppingCart />, link: "/cart" },
-          { icon: <FaHeart />, link: "/wishlist", badge: wishlist?.length },
-          { icon: <FaUserCircle />, link: "/userProf" },
-        ].map((item, i) => (
-          <Link key={i} to={item.link} className={styles.iconBtn}>
-            {item.icon}
-            {item.badge > 0 && (
-              <span className={styles.badge}>{item.badge}</span>
+        {/* DESKTOP ICONS */}
+        <div className={styles.icons}>
+          {[
+            { icon: <FaBell />, link: "/bell" },
+            { icon: <FaShoppingCart />, link: "/cart" },
+            { icon: <FaHeart />, link: "/wishlist", badge: wishlist?.length },
+            { icon: <FaUserCircle />, link: "/userProf" },
+          ].map((item, i) => (
+            <Link key={i} to={item.link} className={styles.iconBtn}>
+              {item.icon}
+              {item.badge > 0 && (
+                <span className={styles.badge}>{item.badge}</span>
+              )}
+            </Link>
+          ))}
+        </div>
+
+        {/* MOBILE ICONS (الجديد 🔥) */}
+        <div className={styles.mobileIcons}>
+          <Link to="/bell" className={styles.iconBtn}>
+            <FaBell />
+          </Link>
+
+          <Link to="/cart" className={styles.iconBtn}>
+            <FaShoppingCart />
+          </Link>
+
+          <Link to="/wishlist" className={styles.iconBtn}>
+            <FaHeart />
+            {wishlist?.length > 0 && (
+              <span className={styles.badge}>{wishlist.length}</span>
             )}
           </Link>
-        ))}
-      </div>
+        </div>
 
-      {/* HAMBURGER */}
-      <div className={styles.hamburger} onClick={() => setMenuOpen(true)}>
-        <FaBars />
-      </div>
-    </div>
-
-    {/* MOBILE MENU */}
-    {menuOpen && (
-      <div className={styles.overlay} onClick={() => setMenuOpen(false)}>
-        <div
-          className={styles.mobileMenu}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <FaTimes
-            className={styles.close}
-            onClick={() => setMenuOpen(false)}
-          />
-
-          <Link onClick={() => setMenuOpen(false)} to="/">
-            Home
-          </Link>
-          <Link onClick={() => setMenuOpen(false)} to="/cart">
-            Cart
-          </Link>
-          <Link onClick={() => setMenuOpen(false)} to="/wishlist">
-            Wishlist
-          </Link>
-          <Link onClick={() => setMenuOpen(false)} to="/userProf">
-            Profile
-          </Link>
+        {/* HAMBURGER */}
+        <div className={styles.hamburger} onClick={() => setMenuOpen(true)}>
+          <FaBars />
         </div>
       </div>
-    )}
 
-    {/* لازم تقفل الكومبوننت */}
+      {/* MOBILE MENU */}
+      {menuOpen && (
+        <div className={styles.overlay} onClick={() => setMenuOpen(false)}>
+          <div
+            className={styles.mobileMenu}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FaTimes
+              className={styles.close}
+              onClick={() => setMenuOpen(false)}
+            />
+
+            <Link onClick={() => setMenuOpen(false)} to="/">
+              Home
+            </Link>
+            <Link onClick={() => setMenuOpen(false)} to="/cart">
+              Cart
+            </Link>
+            <Link onClick={() => setMenuOpen(false)} to="/wishlist">
+              Wishlist
+            </Link>
+            <Link onClick={() => setMenuOpen(false)} to="/userProf">
+              Profile
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 }
