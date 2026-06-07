@@ -101,40 +101,58 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* ICONS DESKTOP */}
-        <div className={styles.icons}>
-          {[
-            { icon: <FaBell />, link: "/bell" },
-            { icon: <FaShoppingCart />, link: "/cart" },
-            { icon: <FaHeart />, link: "/wishlist", badge: wishlist?.length },
-            { icon: <FaUserCircle />, link: "/userProf" },
-          ].map((item, i) => (
-            <Link key={i} to={item.link} className={styles.iconBtn}>
-              {item.icon}
-              {item.badge > 0 && <span className={styles.badge}>{item.badge}</span>}
-            </Link>
-          ))}
-        </div>
-
-        {/* HAMBURGER */}
-        <div className={styles.hamburger} onClick={() => setMenuOpen(true)}>
-          <FaBars />
-        </div>
+            {/* ICONS DESKTOP */}
+      <div className={styles.icons}>
+        {[
+          { icon: <FaBell />, link: "/bell" },
+          { icon: <FaShoppingCart />, link: "/cart" },
+          { icon: <FaHeart />, link: "/wishlist", badge: wishlist?.length },
+          { icon: <FaUserCircle />, link: "/userProf" },
+        ].map((item, i) => (
+          <Link key={i} to={item.link} className={styles.iconBtn}>
+            {item.icon}
+            {item.badge > 0 && (
+              <span className={styles.badge}>{item.badge}</span>
+            )}
+          </Link>
+        ))}
       </div>
 
-      {/* MOBILE MENU */}
-      {menuOpen && (
-        <div className={styles.overlay} onClick={() => setMenuOpen(false)}>
-          <div className={styles.mobileMenu} onClick={(e) => e.stopPropagation()}>
-            <FaTimes className={styles.close} onClick={() => setMenuOpen(false)} />
+      {/* HAMBURGER */}
+      <div className={styles.hamburger} onClick={() => setMenuOpen(true)}>
+        <FaBars />
+      </div>
+    </div>
 
-            <Link onClick={() => setMenuOpen(false)} to="/">Home</Link>
-            <Link onClick={() => setMenuOpen(false)} to="/cart">Cart</Link>
-            <Link onClick={() => setMenuOpen(false)} to="/wishlist">Wishlist</Link>
-            <Link onClick={() => setMenuOpen(false)} to="/userProf">Profile</Link>
-          </div>
+    {/* MOBILE MENU */}
+    {menuOpen && (
+      <div className={styles.overlay} onClick={() => setMenuOpen(false)}>
+        <div
+          className={styles.mobileMenu}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <FaTimes
+            className={styles.close}
+            onClick={() => setMenuOpen(false)}
+          />
+
+          <Link onClick={() => setMenuOpen(false)} to="/">
+            Home
+          </Link>
+          <Link onClick={() => setMenuOpen(false)} to="/cart">
+            Cart
+          </Link>
+          <Link onClick={() => setMenuOpen(false)} to="/wishlist">
+            Wishlist
+          </Link>
+          <Link onClick={() => setMenuOpen(false)} to="/userProf">
+            Profile
+          </Link>
         </div>
-      )}
+      </div>
+    )}
+
+    {/* لازم تقفل الكومبوننت */}
     </>
   );
 }

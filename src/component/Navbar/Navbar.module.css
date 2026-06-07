@@ -283,3 +283,22 @@
 [data-theme="dark"] .hamburger {
   color: #4ade80;
 }
+
+
+/* MOBILE ICONS CONTAINER */
+.mobileIcons {
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+/* show on mobile */
+@media (max-width: 768px) {
+  .mobileIcons {
+    display: flex;
+  }
+
+  .icons {
+    display: none;
+  }
+}
