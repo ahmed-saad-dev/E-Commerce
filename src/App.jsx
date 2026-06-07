@@ -46,7 +46,7 @@ import AdminReports from "./component/AdminReports/AdminReports.jsx";
 import Checkout from "./component/Checkout/Checkout";
 
 // 🔔 Notifications FIXED IMPORTS
-import NotificationContext from "./context/NotificationContext.jsx";
+import NotificationContext from "./Context/NotificationContext.jsx";
 import { NotificationProvider } from "./context/NotificationContext.jsx";
 
 const queryClient = new QueryClient();
