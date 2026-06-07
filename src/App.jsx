@@ -45,9 +45,8 @@ import AdminProducts from "./component/AdminProducts/AdminProducts.jsx";
 import AdminReports from "./component/AdminReports/AdminReports.jsx";
 import Checkout from "./component/Checkout/Checkout";
 
-// 🔔 Notifications FIXED IMPORTS
-import NotificationContext from "./Context/NotificationContext.jsx";
-import { NotificationProvider } from "./context/NotificationContext.jsx";
+// 🔔 NotificationContext FIX (مهم جدًا)
+import { NotificationProvider } from "./Context/NotificationContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +63,9 @@ const routes = createBrowserRouter([
           </ProtectedRout>
         ),
       },
+      { path: "register", element: <Register /> },
+      { path: "login", element: <Login /> },
+
       {
         path: "about",
         element: (
@@ -72,6 +74,7 @@ const routes = createBrowserRouter([
           </ProtectedRout>
         ),
       },
+
       {
         path: "brands",
         element: (
@@ -80,8 +83,6 @@ const routes = createBrowserRouter([
           </ProtectedRout>
         ),
       },
-      { path: "register", element: <Register /> },
-      { path: "login", element: <Login /> },
 
       {
         path: "ProductDetails/:id/:name?",
@@ -226,9 +227,6 @@ const routes = createBrowserRouter([
           </ProtectedRout>
         ),
       },
-
-      // 🔔 Bell Page (اختياري)
-      { path: "bell", element: <Bell /> },
 
       { path: "help-center", element: <HelpCenter /> },
       { path: "*", element: <Notfound /> },
