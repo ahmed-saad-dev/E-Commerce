@@ -1,0 +1,259 @@
+.adminLayout {
+  display: flex;
+  background-color: #0f1322;
+  min-height: 100vh;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+/* الـ Sidebar العريض الخاص بالويب */
+.sidebar {
+  width: 260px;
+  background-color: #1a223f;
+  padding: 25px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-right: 1px solid #252f55;
+}
+
+.logoArea h2 {
+  font-size: 22px;
+  color: #fff;
+  margin: 0;
+}
+
+.logoArea span {
+  color: #ff9f43;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.navItem {
+  background: none;
+  border: none;
+  color: #8a99ad;
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navItem:hover {
+  background-color: #232d52;
+  color: #fff;
+}
+
+.active {
+  background-color: #ff9f43 !important;
+  color: #1a223f !important;
+}
+
+/* المحتوى الرئيسي */
+.mainContent {
+  flex: 1;
+  padding: 40px;
+  background-color: #0f1322;
+}
+
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.topHeader h2 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.adminProfile span {
+  background-color: #1a223f;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  border: 1px solid #252f55;
+}
+
+/* توزيع الكروت بالعرض (3 كروت بجانب بعضهم بالتساوي) */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.statCard {
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#totalUsersCard {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid #252f55;
+}
+
+#pendingCard {
+  background: linear-gradient(135deg, #ff7b7b, #ff5252);
+}
+
+#reportsCard {
+  background: linear-gradient(135deg, #b22222, #8b0000);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.iconCircle {
+  width: 45px;
+  height: 45px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 5px;
+}
+
+#pendingCard .statLabel, #reportsCard .statLabel {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.statNumber {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subTitle {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* زر الأكشن العريض للويب */
+.actionsGrid {
+  max-width: 600px;
+}
+
+.couponButton {
+  background: linear-gradient(90deg, #800080, #ff4500);
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.couponButton:hover {
+  transform: translateY(-2px);
+}
+
+.couponLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.couponIconCircle {
+  width: 45px;
+  height: 45px;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+}
+
+.couponText {
+  text-align: left;
+}
+
+.couponText h5 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.couponText p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+}
+
+.arrowIcon {
+  color: #fff;
+  font-size: 18px;
+}
+
+
+
+
+
+
+
+
+
+.logoutBtnContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.logoutBtn {
+    padding: 5px 15px;
+    font-size: 18px;
+    width: 90%;
+    margin: 25px 0 0 0;
+    border-radius: 5px;
+    border: 1px solid whitesmoke;
+    border: none;
+    background: rgba(255, 0, 0, 0.851);
+    color: whitesmoke;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    border: 2px solid transparent;
+    font-weight: 500;
+}
+
+.logoutBtn:hover {
+    background: #1a223f;
+    /* font-weight: 500; */
+    letter-spacing: normal;
+    padding: 10px 20px;
+    border: 2px solid #333;
+}

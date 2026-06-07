@@ -1,8 +1,8 @@
 .container {
-  max-width: 100%;
+  max-width: 35%;
   margin: 0 auto;
-  padding: 0;
-  background: #f5f5f5 !important;
+  padding: 20px 15px;
+  /* background: #f5f5f5 !important; */
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -120,6 +120,7 @@
   padding: 30px 20px;
   text-align: center;
   border-bottom: 8px solid #f5f5f5;
+
 }
 
 .guestAvatar {
@@ -183,6 +184,8 @@
   padding: 30px 20px;
   border-radius: 0 0 20px 20px;
   box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  margin-bottom: 20px;
+
 }
 
 .avatarLarge {
@@ -426,10 +429,12 @@
   padding: 16px;
   background: #fff;
   margin-top: 8px;
+  display: flex;
 }
 
 .logoutBtn {
-  width: 100%;
+  width: 50%;
+  margin: 3px auto;
   padding: 14px;
   border-radius: 12px;
   border: none;

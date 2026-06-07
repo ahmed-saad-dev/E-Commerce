@@ -7,7 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet"; 
 import Footer from "../Footer/Footer"; 
 import { Link } from "react-router-dom"; 
-import { CartContext } from "../../Context/CartContext"; 
+// import { CartContext } from "../../Context/CartContext"; 
+import { cartContext } from "../../Context/CartContext";
 import CategorySlider from "../CategorySlider/Categoryslider"; 
 import Chatbot from "../chatbot/Chat"; 
 import { subCategoryMap } from "../../data/subCategoryMap"; 
@@ -15,9 +16,10 @@ import "../CategorySlider/CategorySlider.css";
  
 import { FaRegHeart, FaHeart } from "react-icons/fa"; 
 import { useWishlist } from "../../Context/WishlistContext"; 
+import Navbar from "../Navbar/Navbar";
  
 export default function Products() { 
-  const { addToCart } = useContext(CartContext); 
+  const { addToCart } = useContext(cartContext); 
   const { toggleWishlist, isInWishlist, wishlistItems } = useWishlist(); 
  
   const [activeCategory, setActiveCategory] = useState("All"); 
@@ -209,9 +211,11 @@ export default function Products() {
         <title>Products - EGZone</title> 
       </Helmet> 
  
+      <Navbar/>
+    
       <MainSlider /> 
  
-      <div className="container"> 
+      <div className="container my-5"> 
         <CategorySlider 
           categories={categoriesWithProducts} 
           onFilter={handleFilter} 

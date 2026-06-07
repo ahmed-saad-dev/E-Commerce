@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useWishlist } from "../../Context/WishlistContext";
 import { Link } from "react-router-dom";
 import { FaHeartBroken } from "react-icons/fa";
+import Navbar from "../Navbar/Navbar";
 
 export default function Wishlist() {
   const { wishlist, getWishlist, removeFromWishlist } = useWishlist();
@@ -18,6 +19,7 @@ export default function Wishlist() {
   return (
     <>
       <div className="container py-5">
+        <Navbar></Navbar>
         {/* HEADER */}
         <div className="d-flex justify-content-between align-items-center mb-5">
           <div>

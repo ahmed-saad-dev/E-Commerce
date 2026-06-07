@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "./MainSlider.module.css";
 import Slider from "react-slick";
-import img1 from "../../assets/JH01J_LS05_2021.png";
-import img2 from "../../assets/Kids-Orange-Hoodie.png";
-import img3 from "../../assets/71NRfleFGeL.jpg";
-import img4 from "../../assets/Sony_WH1000XM4_feature.jpg";
-import img5 from "../../assets/mano-mens-t-shirt-white27624_12378c0a-13fe-4ae7-898c-97937bbc2aae.jpg";
+import img1 from "../../assets/b.png";
+import img2 from "../../assets/c.png";
+import img3 from "../../assets/a.jpg";
+import img4 from "../../assets/d.jpg";
+import img5 from "../../assets/e.jpg";
 
 export default function MainSlider() {
   const settings = {

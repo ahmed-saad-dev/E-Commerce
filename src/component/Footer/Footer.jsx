@@ -1,9 +1,9 @@
 import React from 'react'
 import style from './Footer.module.css';
-import facebookIcon from '../../assets/facebook_icon.png';
+import facebookIcon from '../../assets/ff.png';
 // import youtubeIcon from '../../assets/youtube_icon.png';
-import twitterIcon from '../../assets/twitter_icon.png';
-import instagramIcon from '../../assets/instagram_icon.png';
+import twitterIcon from '../../assets/tw.png';
+import instagramIcon from '../../assets/in.png';
 
 export default function Footer() {
   return (
@@ -26,7 +26,7 @@ export default function Footer() {
           <li>Contact Us</li>
         </ul>
         <div className={style.copy_right_text}>
-          <i className="fa-regular fa-copyright"></i>
+          <i class="fa-regular fa-copyright"></i>
           <p>2025-2026 EgyZone</p>
         </div>
       </div>

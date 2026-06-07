@@ -6,7 +6,6 @@ import Footer from '../Footer/Footer.jsx';
 export default function Layout() {
   return (
     <div style={{position: "relative"}}>
-      <Navbar/>
       <Outlet></Outlet>
     </div>
   )

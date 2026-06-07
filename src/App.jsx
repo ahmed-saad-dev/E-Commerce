@@ -24,7 +24,8 @@ import Cart from './component/Carts/Carts.jsx';
 import Wishlist from './component/Wishlist/Wishlist.jsx';
 
 import UserContextProvider from './Context/userContext';
-import CartProvider from './Context/CartContext';
+// import CartProvider from './Context/CartContext';
+import { CartContextProvider } from './Context/CartContext.jsx';
 import { WishlistProvider } from './Context/WishlistContext';
 import ThemeProvider from './Context/ThemeContext'; // ✅ ضيفنا ده
 
@@ -35,6 +36,15 @@ import { Offline } from 'react-detect-offline';
 import "./styles/responsive.css";
 
 import HelpCenter from "./component/UserProfile/HelpCenter";
+import Seller from './component/Seller/Seller.jsx';
+import SellerUploadProduct from './component/SellerUploadProduct/SellerUploadProduct.jsx';
+import EditSellerProfile from './component/EditSellerProfile/EditSellerProfile.jsx';
+import ManageInventory from './component/ManageInventory/ManageInventory.jsx';
+import Admin from './component/Admin/Admin.jsx';
+import AdminDashboard from './component/AdminDashboard/AdminDashboard.jsx';
+import AdminProducts from './component/AdminProducts/AdminProducts.jsx';
+import AdminReports from './component/AdminReports/AdminReports.jsx';
+import Checkout from './component/Checkout/Checkout';
 
 const queryClient = new QueryClient();
 
@@ -65,8 +75,17 @@ const routes = createBrowserRouter([
       },
       { path: 'allorders', element: <ProtectedRout><AllOrders /></ProtectedRout> },
       { path: 'cart', element: <ProtectedRout><Cart /></ProtectedRout> },
+      { path: 'checkout', element: <ProtectedRout><Checkout /></ProtectedRout> },
       { path: 'wishlist', element: <ProtectedRout><Wishlist /></ProtectedRout> },
       { path: 'userProf', element: <ProtectedRout><UserProfile /></ProtectedRout> },
+      { path: 'seller', element: <ProtectedRout><Seller/></ProtectedRout> },
+      { path: 'sellerUploadProduct', element: <ProtectedRout><SellerUploadProduct/></ProtectedRout> },
+      { path: 'editSellerProfile', element: <ProtectedRout><EditSellerProfile/></ProtectedRout> },
+      { path: 'manageInventory', element: <ProtectedRout><ManageInventory/></ProtectedRout> },
+      { path: 'admin', element: <ProtectedRout><Admin/></ProtectedRout> },
+      { path: 'adminDashboard', element: <ProtectedRout><AdminDashboard/></ProtectedRout> },
+      { path: 'adminProduct', element: <ProtectedRout><AdminProducts/></ProtectedRout> },
+      { path: 'adminReports', element: <ProtectedRout><AdminReports/></ProtectedRout> },
       { path: 'edit-profile', element: <ProtectedRout><EditUser /></ProtectedRout> },
       { path: 'change-password', element: <ProtectedRout><ChangePassword /></ProtectedRout> },
       { path: 'bell', element: <Bell /> },
@@ -81,7 +100,7 @@ export default function App() {
     <ThemeProvider> {/* ✅ لفينا كل حاجة بيه */}
       <QueryClientProvider client={queryClient}>
         <UserContextProvider>
-          <CartProvider>
+          <CartContextProvider>
             <WishlistProvider>
               <RouterProvider router={routes} />
               <Offline>
@@ -91,7 +110,7 @@ export default function App() {
               </Offline>
               <Toaster />
             </WishlistProvider>
-          </CartProvider>
+          </CartContextProvider>
         </UserContextProvider>
       </QueryClientProvider>
     </ThemeProvider>

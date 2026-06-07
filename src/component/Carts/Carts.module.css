@@ -1,7 +1,12 @@
 .cartImg {
-    width: 90px;
-    height: 130px;
-    margin-left: -10px;
+    width: 140px;
+    height: 143px;
+    margin: 12px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
 }
 
 .cartCount {
@@ -19,14 +24,14 @@
     transition: 1s;
     background-color: rgb(228, 225, 225);
     color: black;
-    padding: 10px 20px;
-    border-radius: 15px;
-    margin-right: 50px;
+    padding: 15px 10px;
+    border-radius: 12px;
+    margin-right: 100px;
     text-align: center;
     width: 120px;
     height: 61px;
     font-weight: 700;
-    font-size: 19px;
+    /* font-size: 19px; */
     border: 1px solid gray
 }
 .clearAllBtn:hover {

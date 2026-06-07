@@ -6,10 +6,12 @@ import RelatedProduct from "../RelatedProduct/RelatedProduct";
 import { toast } from "react-hot-toast";
 import { Helmet } from "react-helmet";
 import Footer from "../Footer/Footer";
-import { CartContext } from "../../Context/CartContext";
+// import { CartContext } from "../../Context/CartContext";
+import { cartContext } from "../../Context/CartContext";
 import { WishlistContext } from "../../Context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeContext } from "../../Context/ThemeContext"; // ✅
+import Navbar from "../Navbar/Navbar";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -23,9 +25,9 @@ export default function ProductDetails() {
   const [loadingCart, setLoadingCart] = useState(false);
   const [loadingFav, setLoadingFav]   = useState(false);
   const [qty, setQty]                 = useState(1);
-  const [added, setAdded]             = useState(false);
+  const [added, setAdded] = useState(false);
 
-  const { addToCart }                     = useContext(CartContext);
+  const { addToCart } = useContext(cartContext);
   const { toggleWishlist, isInWishlist }  = useContext(WishlistContext);
 
   const fav = product ? isInWishlist(product.id) : false;
@@ -85,6 +87,7 @@ export default function ProductDetails() {
       minHeight: "100vh",
       fontFamily: "'DM Sans', sans-serif",
       transition: "background 0.3s ease",
+      marginBottom: "30px",
     },
     grid: {
       display: "grid",
@@ -253,6 +256,8 @@ export default function ProductDetails() {
         <title>{product?.name}</title>
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
       </Helmet>
+
+        <Navbar></Navbar>
 
       <div style={styles.page}>
         <div style={styles.grid}>

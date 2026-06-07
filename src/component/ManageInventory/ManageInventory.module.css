@@ -1,0 +1,77 @@
+.container {
+  min-height: 100vh;
+  background: #1d1d1d;
+  padding: 20px;
+}
+
+.title {
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #2b2b2b;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 70%;
+}
+
+.image {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: white;
+}
+
+.details h4 {
+  color: white;
+  margin: 0;
+  font-size: 20px;
+}
+
+.details p {
+  margin-top: 5px;
+  color: #a7a7a7;
+  font-size: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+}
+
+.editBtn,
+.deleteBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.editBtn {
+  color: #d6d6d6;
+}
+
+.deleteBtn {
+  color: #ff4b4b;
+}
+
+.editBtn:hover,
+.deleteBtn:hover {
+  transform: scale(1.15);
+}
