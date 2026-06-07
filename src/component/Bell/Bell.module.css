@@ -1,0 +1,152 @@
+
+/* PAGE */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f9fafb, #f3f4f6);
+  font-family: Arial;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* BACK */
+.backBtn {
+  border: none;
+  background: #f3f4f6;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TITLE */
+.titleBox {
+  text-align: center;
+  flex: 1;
+}
+
+.titleBox h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.titleBox span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* BODY */
+.body {
+  padding: 12px;
+}
+
+/* LOADER */
+.center {
+  text-align: center;
+  margin-top: 80px;
+  color: #6b7280;
+}
+
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  margin-top: 100px;
+  color: #9ca3af;
+}
+
+.empty .icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+/* CARD */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.unread {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+}
+
+/* DOT */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+  margin-top: 6px;
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+}
+
+.content h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.content p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* DELETE */
+.delete {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+/* ERROR */
+.error {
+  text-align: center;
+  color: red;
+}

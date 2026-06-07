@@ -188,7 +188,7 @@ export default function UserProfile() {
 
         <button
           className={styles.notificationBtn}
-          onClick={() => navigate("/notifications")}
+          onClick={() => navigate("/bell")}
         >
           <FaRegBell />
           {notifications > 0 && (
