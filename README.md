@@ -1,31 +1,41 @@
 # MERN E-Commerce Platform
 
-A full-stack e-commerce application built with MERN Stack.
+A full-stack e-commerce web application built using the MERN Stack (MongoDB, Express, React, Node.js).  
+It provides users with a complete online shopping experience including authentication, product browsing, cart management, and order processing.
 
-## Features
+---
 
-- Authentication & Authorization
-- Product Management
-- Shopping Cart
+## 🚀 Features
+
+- User Authentication & Authorization (JWT)
+- Product Management (CRUD operations)
+- Shopping Cart System
 - Order Management
 - Admin Dashboard
-- Responsive Design
+- Responsive UI for all devices
 
-## Technologies
+---
 
+## 🛠️ Tech Stack
+
+**Frontend:**
 - React.js
 - Redux Toolkit
+- CSS3 / Bootstrap (if used)
+
+**Backend:**
 - Node.js
 - Express.js
 - MongoDB
-- JWT
+- Mongoose
 
-## Installation
+**Authentication:**
+- JSON Web Token (JWT)
 
-npm install
-npm run dev
+---
 
-## Live Demo
+## 📦 Installation
 
-graduation-project-five-chi.vercel.app
-
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/repo-name.git
