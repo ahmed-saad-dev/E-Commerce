@@ -24,12 +24,11 @@ import Bell from "./components/Bell/Bell.jsx"; // ✅ رجعناه
 import Cart from "./components/Carts/Carts.jsx";
 import Wishlist from "./components/Wishlist/Wishlist.jsx";
 
-import UserContextProvider from "./context/userContext.jsx";
-import { CartContextProvider } from "./context/CartContext.jsx";
-import { WishlistProvider } from "./context/WishlistContext.jsx";
-import ThemeProvider from "./context/ThemeContext.jsx";
-import { NotificationProvider } from "./context/NotificationContext.jsx";
-
+import UserContextProvider from "./Context/userContext.jsx";
+import { CartContextProvider } from "./Context/CartContext.jsx";
+import { WishlistProvider } from "./Context/WishlistContext.jsx";
+import ThemeProvider from "./Context/ThemeContext.jsx";
+import { NotificationProvider } from "./Context/NotificationContext.jsx";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Offline } from "react-detect-offline";

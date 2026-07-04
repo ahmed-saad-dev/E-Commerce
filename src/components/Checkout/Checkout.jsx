@@ -3,7 +3,7 @@ import styles from './Checkout.module.css';
 import img1 from '../../assets/p4.jpg'
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { cartContext } from '../../context/CartContext';
+import { cartContext } from "../../Context/CartContext";
 import { Helmet } from 'react-helmet';
 
 // استيراد الأيقونات الفاخرة لتعزيز تجربة المستخدم

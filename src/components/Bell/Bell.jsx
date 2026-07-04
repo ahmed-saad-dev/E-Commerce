@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FaArrowLeft, FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useNotifications } from "../../context/NotificationContext"; // ✅ Capital C
+import { useNotifications } from "../../Context/NotificationContext";
 import styles from "./Bell.module.css";
 
 export default function Bell() {
