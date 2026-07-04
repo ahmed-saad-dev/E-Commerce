@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./EditSellerProfile.module.css";
-import { userContext } from '../../context/userContext';
+import { userContext } from '../../Context/userContext';
 
 export default function EditSellerProfile() {
   const navigate = useNavigate();

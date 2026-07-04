@@ -6,7 +6,7 @@
 
 import React, { useState, useContext, useEffect } from "react";
 import styles from "./Seller.module.css";
-import { userContext } from "../../context/userContext";
+import { userContext } from "../../Context/userContext";
 import { useNavigate, Link } from "react-router-dom";
 import Footer from "../Footer/Footer";
 import {

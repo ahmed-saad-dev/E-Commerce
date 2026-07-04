@@ -1,9 +1,9 @@
 import React, { useEffect, useContext } from "react";
-import { useWishlist } from "../../context/WishlistContext";
+import { useWishlist } from "../../Context/WishlistContext";
 import { Link } from "react-router-dom";
 import { FaHeartBroken, FaHeart, FaTrashAlt, FaEye } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeContext } from "../../context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import Navbar from "../Navbar/Navbar";
 import styles from "./Wishlist.module.css";
 

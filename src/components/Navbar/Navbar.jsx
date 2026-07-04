@@ -4,10 +4,10 @@ import axios from "axios";
 import navlogo from "../../assets/logo.png";
 import styles from "./Navbar.module.css";
 
-import { userContext } from "../../context/userContext.jsx";
-import { cartContext } from "../../context/CartContext";
-import { useWishlist } from "../../context/WishlistContext.jsx";
-import { useNotifications } from "../../context/NotificationContext.jsx";
+import { userContext } from "../../Context/userContext.jsx";
+import { cartContext } from "../../Context/CartContext";
+import { useWishlist } from "../../Context/WishlistContext.jsx";
+import { useNotifications } from "../../Context/NotificationContext.jsx";
 
 import {
   FaBell, FaShoppingCart, FaHeart,

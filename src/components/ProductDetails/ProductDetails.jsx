@@ -5,10 +5,10 @@ import RelatedProduct from "../RelatedProduct/RelatedProduct";
 import { toast } from "react-hot-toast";
 import { Helmet } from "react-helmet";
 import Footer from "../Footer/Footer";
-import { cartContext } from "../../context/CartContext";
-import { WishlistContext } from "../../context/WishlistContext";
+import { cartContext } from "../../Context/CartContext";
+import { WishlistContext } from "../../Context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeContext } from "../../context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import Navbar from "../Navbar/Navbar";
 import styles from "./ProductDetails.module.css"; // ✅ استيراد الـ CSS المنفصل
 import api from "../../api/api";

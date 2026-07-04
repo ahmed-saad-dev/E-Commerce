@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { ThemeContext } from "../../context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 
 export default function HelpCenter() {
   const { theme } = useContext(ThemeContext);

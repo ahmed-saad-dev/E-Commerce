@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { ThemeContext } from "../../context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 
 export default function AboutUs() {
   const navigate = useNavigate();

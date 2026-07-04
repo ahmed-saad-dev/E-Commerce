@@ -28,8 +28,8 @@ import {
 } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
-import { userContext } from "../../context/userContext";
-import { ThemeContext } from "../../context/ThemeContext";
+import { userContext } from "../../Context/userContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import axios from "axios";
 import styles from "./UserProfile.module.css";
 

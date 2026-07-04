@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import * as Yup from 'yup';
-import { userContext } from '../../context/userContext';
+import { userContext } from '../../Context/userContext';
 import { Helmet } from 'react-helmet';
 import '../../styles/Auth.css';
 

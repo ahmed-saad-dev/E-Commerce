@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import styles from "./ManageInventory.module.css";
-import { userContext } from '../../context/userContext';
+import { userContext } from '../../Context/userContext';
 import { FaPen, FaTrash } from "react-icons/fa";
 export default function ManageInventory() {
   const products = [
