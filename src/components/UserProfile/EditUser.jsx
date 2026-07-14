@@ -134,12 +134,16 @@ export default function EditUser() {
     navigate("/userProf");
   };
 
+  // Build initials safely: drop empty fragments (extra spaces) and
+  // guard against missing characters instead of assuming they exist.
   const initials = user.fullName
     ? user.fullName
-        .split(" ")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
         .slice(0, 2)
-        .map((n) => n[0].toUpperCase())
-        .join("")
+        .map((n) => n[0]?.toUpperCase() ?? "")
+        .join("") || "?"
     : "?";
 
   if (loading) {

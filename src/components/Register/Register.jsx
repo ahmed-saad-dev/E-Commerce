@@ -23,12 +23,25 @@ export default function Register() {
       password: "",
       phoneNumber: ""
     },
-    validationSchema: Yup.object({
-      fullName: Yup.string().required('Full name is required').min(3, 'Minimum length is 3 characters').max(30, 'Maximum length is 30 characters'),
-      email: Yup.string().required('Email is required').email('Enter a valid email address'),
-      phoneNumber: Yup.string().required('Phone number is required').matches(/^01[1250][0-9]{8}$/, 'Enter a valid Egyptian phone number'),
-      password: Yup.string().required('Password is required').matches(/^[A-Z][a-z0-9]{6,8}$/, 'Must start with Uppercase followed by 6-8 alpha-numeric characters'),
-    }),
+   validationSchema: Yup.object({
+  fullName: Yup.string()
+    .required('Full name is required')
+    .min(3, 'Minimum length is 3 characters')
+    .max(30, 'Maximum length is 30 characters'),
+
+  email: Yup.string()
+    .required('Email is required')
+    .email('Enter a valid email address'),
+
+  phoneNumber: Yup.string()
+    .required('Phone number is required')
+    .matches(
+      /^01[1250][0-9]{8}$/,
+      'Enter a valid Egyptian phone number'
+    ),
+
+  password: Yup.string().required('Password is required'),
+}),
     onSubmit: async (values) => {
       setLoading(true);
       setMessage('');

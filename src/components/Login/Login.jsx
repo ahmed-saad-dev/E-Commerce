@@ -19,7 +19,7 @@ export default function Login() {
     setMessage(''); 
 
     const adminEmail = "AS@gmail.com";
-    const adminPassword = "pass123";
+  const adminPassword = "123456";
 
     if (formData.email.trim() === adminEmail && formData.password === adminPassword) {
       axios.post('https://egzone.runasp.net/api/Auth/login', formData)
