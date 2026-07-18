@@ -33,12 +33,16 @@ export default function Register() {
     .required('Email is required')
     .email('Enter a valid email address'),
 
-  phoneNumber: Yup.string()
-    .required('Phone number is required')
-    .matches(
-      /^01[1250][0-9]{8}$/,
-      'Enter a valid Egyptian phone number'
-    ),
+  // Buyers can sign up without a phone number — it's only enforced
+  // for the seller flow, where step 2 collects a store contact number anyway.
+  phoneNumber:
+    role === 'seller'
+      ? Yup.string()
+          .required('Phone number is required')
+          .matches(/^01[1250][0-9]{8}$/, 'Enter a valid Egyptian phone number')
+      : Yup.string()
+          .matches(/^01[1250][0-9]{8}$/, 'Enter a valid Egyptian phone number')
+          .notRequired(),
 
   password: Yup.string().required('Password is required'),
 }),
@@ -84,12 +88,19 @@ export default function Register() {
     initialValues: {
       storeName: "",
       description: "",
-      contactNumber: ""
+      contactNumber: "",
+      nationalId: ""
     },
     validationSchema: Yup.object({
       storeName: Yup.string().required('Store name is required').min(3, 'Too short'),
       description: Yup.string().required('Description is required').min(10, 'Please write a descriptive profile summary'),
-      contactNumber: Yup.string().required('Contact number is required').matches(/^01[1250][0-9]{8}$/, 'Invalid phone number')
+      contactNumber: Yup.string().required('Contact number is required').matches(/^01[1250][0-9]{8}$/, 'Invalid phone number'),
+      // Strict Egyptian National ID check: exactly 14 digits, starting with
+      // 2 (born 1900-1999) or 3 (born 2000-2099) per the official format.
+      nationalId: Yup.string()
+        .required('National ID is required')
+        .matches(/^[23][0-9]{13}$/, 'Enter a valid 14-digit Egyptian National ID')
+        .length(14, 'National ID must be exactly 14 digits')
     }),
     onSubmit: (values) => {
       setLoading(true);
@@ -203,9 +214,11 @@ export default function Register() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="auth-input-label">Phone Number</label>
+                  <label className="auth-input-label">
+                    Phone Number{role === 'user' ? ' (optional)' : ''}
+                  </label>
                   <div className="auth-input-group">
-                    <input value={accountForm.values.phoneNumber} name='phoneNumber' type="tel" onChange={accountForm.handleChange} onBlur={accountForm.handleBlur} className="form-control auth-field-control" placeholder="01XXXXXXXXX" required />
+                    <input value={accountForm.values.phoneNumber} name='phoneNumber' type="tel" onChange={accountForm.handleChange} onBlur={accountForm.handleBlur} className="form-control auth-field-control" placeholder="01XXXXXXXXX" required={role === 'seller'} />
                     <i className="fa-solid fa-phone auth-input-icon"></i>
                   </div>
                   {accountForm.touched.phoneNumber && accountForm.errors.phoneNumber ? <div className="auth-inline-error"><i className="fa-solid fa-circle-xmark"></i> {accountForm.errors.phoneNumber}</div> : null}
@@ -234,6 +247,26 @@ export default function Register() {
                     <i className="fa-solid fa-store auth-input-icon"></i>
                   </div>
                   {sellerForm.touched.storeName && sellerForm.errors.storeName ? <div className="auth-inline-error"><i className="fa-solid fa-circle-xmark"></i> {sellerForm.errors.storeName}</div> : null}
+                </div>
+
+                <div className="mb-3">
+                  <label className="auth-input-label">National ID (الرقم القومي)</label>
+                  <div className="auth-input-group">
+                    <input
+                      value={sellerForm.values.nationalId}
+                      name='nationalId'
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={14}
+                      onChange={sellerForm.handleChange}
+                      onBlur={sellerForm.handleBlur}
+                      className="form-control auth-field-control"
+                      placeholder="14-digit National ID"
+                      required
+                    />
+                    <i className="fa-solid fa-id-card auth-input-icon"></i>
+                  </div>
+                  {sellerForm.touched.nationalId && sellerForm.errors.nationalId ? <div className="auth-inline-error"><i className="fa-solid fa-circle-xmark"></i> {sellerForm.errors.nationalId}</div> : null}
                 </div>
 
                 <div className="mb-3">

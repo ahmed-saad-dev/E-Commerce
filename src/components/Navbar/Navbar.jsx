@@ -13,7 +13,7 @@ import {
   FaBell, FaShoppingCart, FaHeart,
   FaBars, FaTimes, FaHome, FaUser,
 } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiX } from "react-icons/fi";
 import { MdFlashOn } from "react-icons/md";
 
 const CATEGORIES = [
@@ -55,6 +55,7 @@ export default function Navbar() {
   const [category,          setCategory]          = useState("الكل");
 
   const desktopInputRef = useRef();
+  const drawerSearchInputRef = useRef();
 
   const searchProducts = async (keyword, setState) => {
     if (!keyword.trim()) {
@@ -140,6 +141,25 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", fn);
   }, [menuOpen]);
 
+  /* ── lock background scroll while drawer is open ── */
+  useEffect(() => {
+    if (menuOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [menuOpen]);
+
+  /* ── autofocus the drawer search input once the slide-in finishes ── */
+  useEffect(() => {
+    if (menuOpen) {
+      const t = setTimeout(() => drawerSearchInputRef.current?.focus(), 320);
+      return () => clearTimeout(t);
+    }
+  }, [menuOpen]);
+
   const getImage = (item) => {
     return item.thumbnail || item.images?.[0] || null;
   };
@@ -191,12 +211,14 @@ export default function Navbar() {
     </div>
   );
 
-  const navLinks = [
-    { icon: <FaHome />,         label: "الرئيسية",  to: "/"         },
-    { icon: <FaBell />,         label: "الإشعارات", to: "/bell",     badge: unreadCount     },
-    { icon: <FaShoppingCart />, label: "السلة",      to: "/cart",     badge: cartQuantity    },
-    { icon: <FaHeart />,        label: "المفضلة",   to: "/wishlist", badge: wishlist?.length },
-    { icon: <FaUser />,         label: "الحساب",    to: "/userProf"  },
+  /* ── drawer navigation ── */
+  const drawerSections = [
+    [
+      { icon: <FaHome />,         label: "الرئيسية", to: "/"          },
+      { icon: <FaShoppingCart />, label: "السلة",    to: "/cart",     badge: cartQuantity     },
+      { icon: <FaHeart />,        label: "المفضلة",  to: "/wishlist", badge: wishlist?.length },
+      { icon: <FaUser />,         label: "الحساب",   to: "/userProf"  },
+    ],
   ];
 
   return (
@@ -207,10 +229,37 @@ export default function Navbar() {
         {/* TOP ROW */}
         <div className={styles.topRow}>
 
-          {/* LOGO */}
-          <Link to="/" className={styles.logo}>
-            <img src={navlogo} alt="EGZone" className={styles.logoImg} />
-          </Link>
+          {/* LOGO + MOBILE QUICK ACTIONS */}
+          <div className={styles.leftGroup}>
+            <Link to="/" className={styles.logo}>
+              <img src={navlogo} alt="EGZone" className={styles.logoImg} />
+            </Link>
+
+            {/* mobile-only quick actions: heart + cart */}
+            <div className={styles.mobileQuickActions}>
+              <Link
+                to="/wishlist"
+                className={styles.mobileIconBtn}
+                aria-label="المفضلة"
+              >
+                <FaHeart className={styles.mobileIcon} />
+                {wishlist?.length > 0 && (
+                  <span className={styles.mobileBadge}>{wishlist.length}</span>
+                )}
+              </Link>
+
+              <Link
+                to="/cart"
+                className={styles.mobileIconBtn}
+                aria-label="السلة"
+              >
+                <FaShoppingCart className={styles.mobileIcon} />
+                {cartQuantity > 0 && (
+                  <span className={styles.mobileBadge}>{cartQuantity}</span>
+                )}
+              </Link>
+            </div>
+          </div>
 
           {/* SEARCH */}
           {permission.isLogin && (
@@ -228,7 +277,8 @@ export default function Navbar() {
                   ref={desktopInputRef}
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
-                  placeholder="ابحث عن أي منتج في EGZone..."
+                  placeholder="بتدور على ايه؟"
+                  dir="rtl"
                   className={styles.searchInput}
                   autoComplete="off"
                 />
@@ -326,48 +376,85 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* ══════════ MOBILE MENU — BOTTOM SHEET ══════════ */}
-      {menuOpen && (
-        <div className={styles.overlay} onClick={() => setMenuOpen(false)} role="dialog" aria-modal="true">
-          <div className={styles.sheet} onClick={e => e.stopPropagation()}>
-
-            <div className={styles.sheetHandle}><div className={styles.handleBar} /></div>
-
+      {/* ══════════ MOBILE MENU — RIGHT-SIDE SLIDE-IN DRAWER ══════════
+          Always mounted (not conditionally rendered) so both the open
+          and close transitions animate smoothly over 300ms. */}
+      <div
+        className={`${styles.drawerOverlay} ${menuOpen ? styles.drawerOverlayOpen : ""}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden={!menuOpen}
+      >
+        <div
+          className={`${styles.drawer} ${menuOpen ? styles.drawerOpen : ""}`}
+          onClick={e => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-label="القائمة"
+        >
+          {/* drawer header */}
+          <div className={styles.drawerHeader}>
+            <span className={styles.drawerTitle}>القائمة</span>
             <button className={styles.closeBtn} onClick={() => setMenuOpen(false)} aria-label="إغلاق">
               <FaTimes />
             </button>
+          </div>
 
-            {/* mobile search */}
-            {permission.isLogin && (
-              <div className={styles.sheetSearchWrap}>
-                <div className={styles.sheetSearchBox}>
-                  <FiSearch className={styles.sheetSearchIcon} />
-                  <input
-                    value={mobileSearchInput}
-                    onChange={e => setMobileSearchInput(e.target.value)}
-                    placeholder="ابحث عن أي منتج..."
-                    autoComplete="off"
-                  />
-                  <button className={styles.sheetSearchBtn} aria-label="بحث"><FiSearch /></button>
-                </div>
-                {mobileSuggestions.length > 0 && <Dropdown items={mobileSuggestions} />}
-              </div>
-            )}
-
-            {/* links grid */}
-            <div className={styles.sheetGrid}>
-              {navLinks.map((item, i) => (
-                <Link key={i} to={item.to} className={styles.sheetLink} onClick={() => setMenuOpen(false)}>
-                  <span className={styles.sheetLinkIcon}>{item.icon}</span>
-                  <span>{item.label}</span>
-                  {item.badge > 0 && <span className={styles.sheetBadge}>{item.badge}</span>}
-                </Link>
-              ))}
+          {/* search bar */}
+          <div className={styles.drawerSearchWrap}>
+            <div className={styles.drawerSearchBox}>
+              <FiSearch className={styles.drawerSearchIcon} />
+              <input
+                ref={drawerSearchInputRef}
+                value={mobileSearchInput}
+                onChange={e => setMobileSearchInput(e.target.value)}
+                placeholder="بتدور على ايه؟"
+                dir="rtl"
+                autoComplete="off"
+                className={styles.drawerSearchInput}
+              />
+              {mobileSearchInput.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.drawerSearchClear}
+                  aria-label="مسح"
+                  onClick={() => {
+                    setMobileSearchInput("");
+                    drawerSearchInputRef.current?.focus();
+                  }}
+                >
+                  <FiX />
+                </button>
+              )}
             </div>
+            {mobileSuggestions.length > 0 && <Dropdown items={mobileSuggestions} />}
+          </div>
 
+          {/* sectioned links */}
+          <div className={styles.drawerBody}>
+            {drawerSections.map((section, si) => (
+              <React.Fragment key={si}>
+                {si > 0 && <div className={styles.drawerDivider} />}
+                <div className={styles.drawerSection}>
+                  {section.map((item, i) => (
+                    <Link
+                      key={i}
+                      to={item.to}
+                      className={styles.drawerLink}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <span className={styles.drawerLinkIcon}>{item.icon}</span>
+                      <span>{item.label}</span>
+                      {item.badge > 0 && (
+                        <span className={styles.drawerBadge}>{item.badge}</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
