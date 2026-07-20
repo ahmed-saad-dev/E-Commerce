@@ -16,7 +16,7 @@
 }
 
 .titleSpan {
-  color: #7c3aed; /* Premium Purple Primary */
+  color: #7c3aed;
 }
 
 /* Main Grid Layout */
@@ -126,7 +126,7 @@
   position: absolute;
   top: 6px;
   left: 6px;
-  background-color: #fbbf24; /* Gold Accent */
+  background-color: #fbbf24;
   color: #000000;
   font-size: 10px;
   font-weight: 700;
@@ -208,6 +208,10 @@
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
+}
+
+.currencyLabel {
+  font-size: 12px;
 }
 
 .oldPrice {
@@ -325,7 +329,12 @@
 }
 
 .summaryRowHighlight {
-  color: #fbbf24; /* Gold Highlight */
+  color: #fbbf24;
+}
+
+.freeShipping {
+  color: #10b981;
+  font-weight: 500;
 }
 
 .summaryDivider {
@@ -351,7 +360,7 @@
 .currency {
   font-size: 14px;
   color: #7c3aed;
-  margin-left: 4px;
+  margin-right: 4px;
 }
 
 /* Action Buttons inside Summary */
@@ -450,4 +459,147 @@
 .emptyBtn:hover {
   background-color: #f59e0b;
   transform: translateY(-1px);
+}
+
+/* ============================================
+   Authentication Modal Styles - الجزء المهم
+   ============================================ */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  animation: fadeInModalOverlay 0.25s ease forwards;
+}
+
+@keyframes fadeInModalOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContent {
+  background-color: #121214;
+  border: 1px solid #27272a;
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: slideUpModalContent 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpModalContent {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalIconContainer {
+  width: 64px;
+  height: 64px;
+  background: rgba(124, 58, 237, 0.1);
+  color: #7c3aed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.modalDescription {
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modalActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.modalPrimaryBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.modalPrimaryBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+}
+
+.modalSecondaryBtn {
+  width: 100%;
+  background-color: #1c1c1e;
+  color: #ffffff;
+  border: 1px solid #27272a;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalSecondaryBtn:hover {
+  background-color: #27272a;
+  border-color: #4b5563;
+}
+
+.modalTextBtn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-top: 4px;
+}
+
+.modalTextBtn:hover {
+  color: #ffffff;
 }

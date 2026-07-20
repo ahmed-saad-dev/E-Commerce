@@ -5,10 +5,10 @@ import MainSlider from "../MainSlider/MainSlider";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import Footer from "../Footer/Footer";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { cartContext } from "../../Context/CartContext";
 import CategorySlider from "../CategorySlider/Categoryslider";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaStar } from "react-icons/fa";
 import { useWishlist } from "../../Context/WishlistContext";
 import Navbar from "../Navbar/Navbar";
 import styles from "./Products.module.css";
@@ -28,12 +28,38 @@ function getRawCategorySlug(product) {
   return typeof product?.category === "string" ? product.category : product?.category?.slug || "";
 }
 
+/**
+ * DummyJSON's `price` field is the actual price the customer pays;
+ * `discountPercentage` tells us how much was knocked off. We derive the
+ * pre-discount ("original") price from that so the card can show a
+ * strikethrough price + a "-XX%" badge. Mirrors the same formula already
+ * used in ProductDetails.jsx so prices are consistent across the app.
+ */
+function getPriceInfo(product) {
+  const price = product?.price ?? 0;
+  const discountPercentage = product?.discountPercentage ?? 0;
+  const hasDiscount = discountPercentage >= 1;
+  const originalPrice = hasDiscount ? price / (1 - discountPercentage / 100) : price;
+
+  return {
+    price,
+    hasDiscount,
+    originalPrice,
+    discountPercent: Math.round(discountPercentage),
+  };
+}
+
 export default function Products() {
   const { addToCart } = useContext(cartContext);
 const { toggleWishlist, isInWishlist, wishlist } = useWishlist();
 
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get("category");
+  const initialCategory =
+    categoryFromUrl && getCategoryLabels().includes(categoryFromUrl) ? categoryFromUrl : ALL;
+
   /* ── hierarchical filter state ── */
-  const [activeCategory, setActiveCategory] = useState(ALL);
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [activeSubCategory, setActiveSubCategory] = useState(ALL);
   const [activeBrands, setActiveBrands] = useState([]); // multi-select
   const [brandSearch, setBrandSearch] = useState("");
@@ -53,6 +79,13 @@ const { toggleWishlist, isInWishlist, wishlist } = useWishlist();
     staleTime: 5 * 60 * 1000,
     retry: 2,
   });
+
+  useEffect(() => {
+    if (categoryFromUrl && getCategoryLabels().includes(categoryFromUrl)) {
+      setActiveCategory(categoryFromUrl);
+      setActiveSubCategory(ALL);
+    }
+  }, [categoryFromUrl]);
 
   /* ── products filtered by category only (used for category counts) ── */
   const getProductsForCategory = useCallback(
@@ -311,57 +344,72 @@ const handleWishlistToggle = (e, product) => {
           </div>
         ) : (
           <div className={styles.productsGrid}>
-            {finalProducts.map((product) => (
-              <div key={product.id} className={styles.productCard}>
-                <Link to={`/ProductDetails/${product.id}`} className={styles.productLink}>
-                  {/* IMAGE */}
-                  <div className={styles.imageContainer}>
-                   <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleWishlistToggle(e, product);
-  }}
-  aria-label={
-    isInWishlist(product.id)
-      ? "Remove from wishlist"
-      : "Add to wishlist"
-  }
-  className={`${styles.wishlistBtn} ${
-    isInWishlist(product.id) ? styles.wishlistActive : ""
-  }`}
->
-  {isInWishlist(product.id) ? (
-    <FaHeart size={15} />
-  ) : (
-    <FaRegHeart size={15} />
-  )}
-</button>
-                    <img
-                      src={product.images?.[0] || product.thumbnail || "/default-product.png"}
-                      className={styles.productImage}
-                      alt={product.title}
-                      onError={(e) => (e.target.src = "/default-product.png")}
-                    />
+            {finalProducts.map((product) => {
+              const { price, hasDiscount, originalPrice, discountPercent } = getPriceInfo(product);
 
-                    <span className={styles.categoryTag}>{getCategoryLabel(product)}</span>
+              return (
+                <div key={product.id} className={styles.productCard}>
+                  <Link to={`/ProductDetails/${product.id}`} className={styles.productLink}>
+                    {/* IMAGE */}
+                    <div className={styles.imageContainer}>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleWishlistToggle(e, product);
+                        }}
+                        aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                        className={`${styles.wishlistBtn} ${
+                          isInWishlist(product.id) ? styles.wishlistActive : ""
+                        }`}
+                      >
+                        {isInWishlist(product.id) ? <FaHeart size={15} /> : <FaRegHeart size={15} />}
+                      </button>
+
+                      {hasDiscount && (
+                        <span className={styles.discountBadge}>-{discountPercent}%</span>
+                      )}
+
+                      <img
+                        src={product.images?.[0] || product.thumbnail || "/default-product.png"}
+                        className={styles.productImage}
+                        alt={product.title}
+                        loading="lazy"
+                        onError={(e) => (e.target.src = "/default-product.png")}
+                      />
+
+                      <span className={styles.categoryTag}>{getCategoryLabel(product)}</span>
+                    </div>
+
+                    {/* INFO */}
+                    <div className={styles.productInfo}>
+                      <h6 className={styles.productName}>{product.title}</h6>
+
+                      {typeof product.rating === "number" && (
+                        <div className={styles.ratingRow}>
+                          <FaStar className={styles.ratingStar} />
+                          <span className={styles.ratingValue}>{product.rating.toFixed(1)}</span>
+                        </div>
+                      )}
+
+                      <div className={styles.priceRow}>
+                        <span className={styles.productPrice}>${price.toFixed(2)}</span>
+                        {hasDiscount && (
+                          <span className={styles.originalPrice}>${originalPrice.toFixed(2)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* CART */}
+                  <div className={styles.cartBtnWrapper}>
+                    <button onClick={(e) => handleAddToCart(e, product.id)} className={styles.cartBtn}>
+                      🛒 Add to Cart
+                    </button>
                   </div>
-
-                  {/* INFO */}
-                  <div className={styles.productInfo}>
-                    <h6 className={styles.productName}>{product.title}</h6>
-                    <span className={styles.productPrice}>${product.price}</span>
-                  </div>
-                </Link>
-
-                {/* CART */}
-                <div className={styles.cartBtnWrapper}>
-                  <button onClick={(e) => handleAddToCart(e, product.id)} className={styles.cartBtn}>
-                    🛒 Add to Cart
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

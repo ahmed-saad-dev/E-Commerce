@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { userContext } from "../../Context/userContext";
 import { Helmet } from 'react-helmet';
 import '../../styles/Auth.css';
+import styles from './Register.module.css'; 
 
 export default function Register() {
   let [message, setMessage] = useState('');
@@ -15,6 +16,14 @@ export default function Register() {
   let [savedToken, setSavedToken] = useState(null); 
   let { setSellerOrUser, setSignupMessage } = useContext(userContext); 
   let navigate = useNavigate();
+
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   const accountForm = useFormik({
     initialValues: {
@@ -146,6 +155,18 @@ export default function Register() {
         <div className="auth-glass-card shadow-lg">
           <div className="card-body p-4 p-sm-5">
             
+            {/* Back Button */}
+            <div className="mb-4">
+             <button
+  type="button"
+  onClick={handleBack}
+  className={styles.backButton}
+>
+  <span>←</span>
+  العودة
+</button>
+            </div>
+
             {/* Header Identity Block Area Layout */}
             <div className="text-center mb-4">
               <div className="d-flex align-items-center justify-content-center gap-2 mb-2">

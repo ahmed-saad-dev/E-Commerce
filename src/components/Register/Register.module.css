@@ -1,3 +1,40 @@
 .delay{
     transition: 1s;
 }
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.6rem 1rem;
+
+  background: #1A1A22;
+  color: #F5F5F5;
+
+  border: 1px solid #7C3AED;
+  border-radius: 12px;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.backButton:hover {
+  background: #7C3AED;
+  border-color: #7C3AED;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+.backButton span {
+  font-size: 1.1rem;
+}

@@ -6,13 +6,21 @@ import * as Yup from 'yup';
 import { userContext } from '../../Context/userContext';
 import { Helmet } from 'react-helmet';
 import '../../styles/Auth.css';
-
+import styles from './Login.module.css';
 export default function Login() {
   let [message, setMessage] = useState('');
   let [loading, setLoading] = useState(false);
   let navigate = useNavigate();
   let { isSellerOrUser, setSellerEmail, setSellerOrUser } = useContext(userContext);
   let permission = useContext(userContext);
+
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   async function formMaipulation(formData) {
     setLoading(true);
@@ -92,6 +100,18 @@ export default function Login() {
         <div className="auth-glass-card shadow-lg">
           <div className="card-body p-4 p-sm-5">
             
+            {/* Back Button */}
+            <div className="mb-4">
+          <button
+            type="button"
+            onClick={handleBack}
+            className={styles.backButton}
+          >
+            <span>←</span>
+            العودة
+          </button>
+            </div>
+
             {/* Header Brand Block area layout */}
             <div className="text-center mb-4">
               <div className="d-flex align-items-center justify-content-center gap-2 mb-2">

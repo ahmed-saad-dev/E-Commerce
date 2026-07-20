@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { cartContext } from "../../Context/CartContext";
+import { userContext } from "../../Context/userContext";
 import styles from "./Carts.module.css";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Loader/Loader";
@@ -15,133 +16,154 @@ export default function Carts() {
     deleteAllCart,
   } = useContext(cartContext);
 
-  const [ProdOfCarts, setProdOfCarts] = useState([]);
-  const [Loading, setLoading] = useState(true);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { isLogin } = useContext(userContext);
+
+  const [cartProducts, setCartProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const navigate = useNavigate();
 
   // ---------------- GET CARTS ----------------
-  async function waitGetCarts() {
+  const fetchCarts = useCallback(async () => {
     const { data } = await getCarts();
-    setProdOfCarts(data || []);
+    setCartProducts(data || []);
     setLoading(false);
-  }
+  }, [getCarts]);
 
   // ---------------- UPDATE CART ----------------
-  async function waitUpdateCarts(id, count) {
+  const updateCartQuantity = useCallback(async (id, count) => {
     const { data } = await updateCart(id, count);
-    if (data) setProdOfCarts(data);
-  }
+    if (data) setCartProducts(data);
+  }, [updateCart]);
 
   // ---------------- DELETE ITEM ----------------
-  async function waitDeleteCartProd(id) {
+  const deleteCartItem = useCallback(async (id) => {
     await deleteCartProduct(id);
-    waitGetCarts();
-  }
+    fetchCarts();
+  }, [deleteCartProduct, fetchCarts]);
 
   // ---------------- DELETE ALL ----------------
-  async function waitDeleteAllCart() {
+  const clearAllCart = useCallback(async () => {
     const { data } = await deleteAllCart();
-    if (data) setProdOfCarts(data);
-  }
+    if (data) setCartProducts(data);
+  }, [deleteAllCart]);
 
   // ---------------- NAVIGATION ----------------
-  function continueShopping() {
+  const continueShopping = useCallback(() => {
     navigate("/");
-  }
+  }, [navigate]);
 
-  // Target checkout route exactly as specified
-  function openChekOut() {
-    navigate("/Checkout");
-  }
+  // ---------------- AUTHENTICATION CHECK ----------------
+  const isAuthenticated = useMemo(() => {
+    const tokenFromContext = isLogin;
+    const tokenFromStorage = localStorage.getItem('userToken');
+    return !!(tokenFromContext || tokenFromStorage);
+  }, [isLogin]);
 
-  // ---------------- TOTAL PRICE ----------------
-  function totalPriceFunc() {
-    let total = 0;
-    ProdOfCarts?.forEach((item) => {
-      total += (item?.price || 0) * (item?.quantity || 1);
-    });
-    setTotalPrice(total);
-  }
+  // ---------------- CHECKOUT HANDLER ----------------
+  const openCheckout = useCallback((e) => {
+    // منع أي سلوك افتراضي للزر
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // التحقق من المصادقة
+    if (isAuthenticated) {
+      navigate("/Checkout");
+    } else {
+      setShowAuthModal(true);
+    }
+  }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    totalPriceFunc();
-  }, [ProdOfCarts]);
+  const closeAuthModal = useCallback(() => {
+    setShowAuthModal(false);
+  }, []);
 
-  // ---------------- QUANTITY ----------------
-  function quantityPlus(id) {
-    const item = ProdOfCarts.find((i) => i.cartItemId === id);
+  // ---------------- DERIVED STATE ----------------
+  const totalPrice = useMemo(() => {
+    return cartProducts?.reduce((total, item) => {
+      return total + (item?.price || 0) * (item?.quantity || 1);
+    }, 0) || 0;
+  }, [cartProducts]);
+
+  const totalItems = useMemo(() => {
+    return cartProducts?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+  }, [cartProducts]);
+
+  const itemCount = useMemo(() => {
+    return cartProducts?.length || 0;
+  }, [cartProducts]);
+
+  // ---------------- QUANTITY HANDLERS ----------------
+  const handleQuantityPlus = useCallback((id) => {
+    const item = cartProducts.find((i) => i.cartItemId === id);
     if (!item) return;
-    waitUpdateCarts(id, item.quantity + 1);
-  }
+    updateCartQuantity(id, item.quantity + 1);
+  }, [cartProducts, updateCartQuantity]);
 
-  function quantityMinus(id) {
-    const item = ProdOfCarts.find((i) => i.cartItemId === id);
+  const handleQuantityMinus = useCallback((id) => {
+    const item = cartProducts.find((i) => i.cartItemId === id);
     if (!item) return;
-    waitUpdateCarts(id, Math.max(1, item.quantity - 1));
-  }
+    updateCartQuantity(id, Math.max(1, item.quantity - 1));
+  }, [cartProducts, updateCartQuantity]);
 
   // ---------------- INIT ----------------
   useEffect(() => {
-    waitGetCarts();
-  }, []);
+    fetchCarts();
+  }, [fetchCarts]);
 
   return (
     <>
       <Helmet>
-        <title>Your Cart</title>
+        <title>سلة التسوق</title>
       </Helmet>
 
       <Navbar />
 
       <div className={styles.cartContainer}>
         <div className="container">
-          {!Loading ? (
-            ProdOfCarts.length === 0 ? (
-              /* PREMIUM EMPTY STATE ILLUSTRATION */
+          {!loading ? (
+            cartProducts.length === 0 ? (
               <div className={styles.emptyCartState}>
                 <div className={styles.emptyIconContainer}>
                   <i className="fa-solid fa-bag-shopping"></i>
                 </div>
-                <h2 className={styles.emptyTitle}>Your cart feels light</h2>
+                <h2 className={styles.emptyTitle}>سلتك فارغة</h2>
                 <p className={styles.emptyText}>
-                  Explore our exclusive collection and add products to get started.
+                  ابدأ بإضافة منتجات إلى سلتك للاستمتاع بتجربة التسوق.
                 </p>
                 <button onClick={continueShopping} className={styles.emptyBtn}>
-                  Start Shopping
+                  ابدأ التسوق
                 </button>
               </div>
             ) : (
-              /* MODERN 2-COLUMN GRID SYSTEM */
               <div className="row g-4 mt-2">
                 <div className="col-12">
                   <div className={styles.listHeader}>
                     <div>
                       <h1 className={styles.title}>
-                        Shopping <span className={styles.titleSpan}>Cart</span>
+                        سلة <span className={styles.titleSpan}>التسوق</span>
                       </h1>
                       <span className={styles.itemCountText}>
-                        ({ProdOfCarts.length} {ProdOfCarts.length === 1 ? 'item' : 'items'})
+                        ({itemCount} {itemCount === 1 ? 'منتج' : 'منتجات'})
                       </span>
                     </div>
-                    <button onClick={waitDeleteAllCart} className={styles.clearAllBtn}>
-                      Clear Cart
+                    <button onClick={clearAllCart} className={styles.clearAllBtn}>
+                      إفراغ السلة
                     </button>
                   </div>
                 </div>
 
                 <div className={styles.cartLayout}>
-                  {/* LEFT COLUMN: LIVE PRODUCT CARDS */}
                   <div className={styles.itemsList}>
-                    {ProdOfCarts.map((item) => {
-                      // Dynamically calculate/mock UI metadata requested without modifying schema
-                      const fallbackOldPrice = Math.round(item?.price * 1.25);
-                      const fallbackDiscount = 20;
+                    {cartProducts.map((item) => {
+                      const hasDiscount = item?.discount && item.discount > 0;
+                      const oldPrice = hasDiscount ? Math.round(item.price / (1 - item.discount / 100)) : null;
 
                       return (
                         <div key={item.cartItemId} className={styles.productCard}>
-                          {/* Left Item Sub-grouping */}
                           <div className={styles.productInfoSection}>
                             <div className={styles.imgContainer}>
                               <img
@@ -149,40 +171,43 @@ export default function Carts() {
                                 alt={item?.productName}
                                 className={styles.cartImg}
                               />
-                              <span className={styles.discountBadge}>
-                                -{fallbackDiscount}%
-                              </span>
+                              {hasDiscount && (
+                                <span className={styles.discountBadge}>
+                                  -{item.discount}%
+                                </span>
+                              )}
                             </div>
 
                             <div className={styles.metaDetails}>
-                              <span className={styles.categoryText}>Premium Tech</span>
+                              {item?.categoryName && (
+                                <span className={styles.categoryText}>{item.categoryName}</span>
+                              )}
                               <h4 className={styles.productName}>{item?.productName}</h4>
-                              <div className={styles.ratingStockRow}>
-                                <span className={styles.rating}>
-                                  <i className="fa-solid fa-star"></i> 4.8
-                                </span>
-                                <span className={styles.stockStatus}>In Stock</span>
-                              </div>
+                              {item?.stock && item.stock > 0 && (
+                                <div className={styles.ratingStockRow}>
+                                  <span className={styles.stockStatus}>متوفر</span>
+                                </div>
+                              )}
                             </div>
                           </div>
 
-                          {/* Center Price Information Display */}
                           <div className={styles.priceSection}>
                             <div className={styles.currentPrice}>
-                              {item?.price} <span style={{ fontSize: '12px' }}>EGP</span>
+                              {item?.price} <span className={styles.currencyLabel}>ج.م</span>
                             </div>
-                            <div className={styles.oldPrice}>
-                              {fallbackOldPrice} EGP
-                            </div>
+                            {oldPrice && (
+                              <div className={styles.oldPrice}>
+                                {oldPrice} ج.م
+                              </div>
+                            )}
                           </div>
 
-                          {/* Controls Row: Counter & Trash Trigger */}
                           <div className={styles.controlsSection}>
                             <div className={styles.cartCount}>
                               <button
-                                onClick={() => quantityMinus(item?.cartItemId)}
+                                onClick={() => handleQuantityMinus(item?.cartItemId)}
                                 className={styles.quantityBtn}
-                                aria-label="Decrease Quantity"
+                                aria-label="تقليل الكمية"
                               >
                                 <i className="fa-solid fa-minus"></i>
                               </button>
@@ -190,20 +215,21 @@ export default function Carts() {
                                 className={styles.quantityInput}
                                 value={item?.quantity}
                                 readOnly
+                                aria-label="الكمية"
                               />
                               <button
-                                onClick={() => quantityPlus(item?.cartItemId)}
+                                onClick={() => handleQuantityPlus(item?.cartItemId)}
                                 className={styles.quantityBtn}
-                                aria-label="Increase Quantity"
+                                aria-label="زيادة الكمية"
                               >
                                 <i className="fa-solid fa-plus"></i>
                               </button>
                             </div>
 
                             <button
-                              onClick={() => waitDeleteCartProd(item?.cartItemId)}
+                              onClick={() => deleteCartItem(item?.cartItemId)}
                               className={styles.removeBtn}
-                              aria-label="Remove Item"
+                              aria-label="حذف المنتج"
                             >
                               <i className="fa-solid fa-trash-can"></i>
                             </button>
@@ -213,51 +239,54 @@ export default function Carts() {
                     })}
                   </div>
 
-                  {/* RIGHT COLUMN: STICKY ORDER SUMMARY PANEL */}
                   <div className={styles.summaryCard}>
-                    <h3 className={styles.summaryTitle}>Order Summary</h3>
+                    <h3 className={styles.summaryTitle}>ملخص الطلب</h3>
                     
                     <div className={styles.summaryRow}>
-                      <span>Total Items</span>
-                      <span>{ProdOfCarts.reduce((acc, i) => acc + i.quantity, 0)}</span>
+                      <span>عدد المنتجات</span>
+                      <span>{totalItems}</span>
                     </div>
 
                     <div className={styles.summaryRow}>
-                      <span>Subtotal</span>
-                      <span>{totalPrice} EGP</span>
+                      <span>إجمالي المنتجات</span>
+                      <span>{totalPrice} ج.م</span>
                     </div>
 
                     <div className={styles.summaryRow}>
-                      <span>Estimated Shipping</span>
-                      <span className="text-success">FREE</span>
+                      <span>تكلفة الشحن</span>
+                      <span className={styles.freeShipping}>مجاني</span>
                     </div>
 
                     <div className={`${styles.summaryRow} ${styles.summaryRowHighlight}`}>
-                      <span>Discounts applied</span>
-                      <span>-0.00 EGP</span>
+                      <span>الخصومات</span>
+                      <span>-0.00 ج.م</span>
                     </div>
 
                     <div className={styles.summaryRow}>
-                      <span>Estimated Tax</span>
-                      <span>0.00 EGP</span>
+                      <span>الضريبة</span>
+                      <span>0.00 ج.م</span>
                     </div>
 
                     <div className={styles.summaryDivider}></div>
 
                     <div className={styles.totalRow}>
-                      <span>Total</span>
+                      <span>الإجمالي</span>
                       <span className={styles.totalAmount}>
                         {totalPrice}
-                        <span className={styles.currency}>EGP</span>
+                        <span className={styles.currency}>ج.م</span>
                       </span>
                     </div>
 
-                    <button onClick={openChekOut} className={styles.checkoutBtn}>
-                      Proceed to Checkout <i className="fa-solid fa-arrow-right ms-1"></i>
+                    <button 
+                      onClick={openCheckout} 
+                      className={styles.checkoutBtn}
+                      type="button"
+                    >
+                      إتمام الطلب <i className="fa-solid fa-arrow-left ms-1"></i>
                     </button>
 
                     <button onClick={continueShopping} className={styles.continueBtn}>
-                      Continue Shopping
+                      متابعة التسوق
                     </button>
                   </div>
                 </div>
@@ -268,6 +297,57 @@ export default function Carts() {
           )}
         </div>
       </div>
+
+      {/* مودال تسجيل الدخول */}
+      {showAuthModal && (
+        <div 
+          className={styles.modalOverlay}
+          onClick={closeAuthModal}
+        >
+          <div 
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
+          >
+            <div className={styles.modalIconContainer}>
+              <i className="fa-solid fa-lock"></i>
+            </div>
+            
+            <h3 id="auth-modal-title" className={styles.modalTitle}>
+              تسجيل الدخول مطلوب
+            </h3>
+            
+            <p className={styles.modalDescription}>
+              لإكمال عملية الشراء، يجب تسجيل الدخول إلى حسابك أولاً.
+            </p>
+
+            <div className={styles.modalActions}>
+              <button 
+                onClick={() => navigate("/login")} 
+                className={styles.modalPrimaryBtn}
+              >
+                تسجيل الدخول
+              </button>
+
+              <button 
+                onClick={() => navigate("/register")} 
+                className={styles.modalSecondaryBtn}
+              >
+                إنشاء حساب
+              </button>
+
+              <button 
+                onClick={closeAuthModal} 
+                className={styles.modalTextBtn}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>

@@ -6,26 +6,71 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { cartContext } from "../../Context/CartContext";
 import { Helmet } from 'react-helmet';
-import { FaShieldAlt, FaLock, FaTruck, FaUndo, FaHeadset, FaCreditCard, FaPaypal, FaApplePay, FaUser, FaPhone, FaMapMarkerAlt, FaCity, FaBuilding, FaLayerGroup, FaDoorOpen, FaStickyNote, FaSpinner, FaCheck, FaTimes, FaClock, FaGift, FaBox, FaShippingFast, FaMoneyBillWave } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaShieldAlt, FaLock, FaTruck, FaUndo, FaHeadset, FaCreditCard, FaPaypal, FaApplePay, FaUser, FaPhone, FaMapMarkerAlt, FaCity, FaBuilding, FaLayerGroup, FaDoorOpen, FaStickyNote, FaSpinner, FaCheck, FaTimes, FaClock, FaGift, FaBox, FaShippingFast, FaMoneyBillWave, FaArrowLeft } from 'react-icons/fa';
 import { SiGooglepay, SiVodafone } from 'react-icons/si';
 import { MdOutlineLocalOffer } from 'react-icons/md';
 
 export default function Checkout() {
-  let { cartID } = useContext(cartContext);
+  let { cartID, getCarts } = useContext(cartContext);
+  const navigate = useNavigate();
+  const location = useLocation();
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [loading, setLoading] = useState(false);
   const [couponLoading, setCouponLoading] = useState(false);
-  const [couponMessage, setCouponMessage] = useState('');
   const [couponError, setCouponError] = useState('');
   const [couponSuccess, setCouponSuccess] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0); // نسبة الخصم
   const [vcashNumber, setVcashNumber] = useState('');
   const [vcashError, setVcashError] = useState('');
-  const [orderTotal, setOrderTotal] = useState(4500);
-  const [shippingCost, setShippingCost] = useState(150);
-  const [taxAmount, setTaxAmount] = useState(225);
-  const [productCount, setProductCount] = useState(3);
-  const [savingsAmount, setSavingsAmount] = useState(0);
+  
+  // Real cart state variables mirroring Carts.jsx calculations
+  const [prodOfCarts, setProdOfCarts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  // Fetch real cart items on mount to compute live totals
+  useEffect(() => {
+    async function fetchCartData() {
+      try {
+        const { data } = await getCarts();
+        setProdOfCarts(data || []);
+      } catch (error) {
+        console.error('Error fetching real cart data:', error);
+      }
+    }
+    fetchCartData();
+  }, [getCarts]);
+
+  // Compute total price matching Carts.jsx logic
+  useEffect(() => {
+    let total = 0;
+    prodOfCarts?.forEach((item) => {
+      total += (item?.price || 0) * (item?.quantity || 1);
+    });
+    setTotalPrice(total);
+  }, [prodOfCarts]);
+
+  // Calculated values matching Cart summary structure exactly
+  const totalItems = prodOfCarts.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = totalPrice;
+  const shippingCost = 0; // Matching Cart page: "FREE" / 0 EGP
+  const taxAmount = 0; // Matching Cart page: 0.00 EGP
+  
+  // حساب قيمة الخصم بناءً على نسبة الخصم (نصف المبلغ لو كود ahmed love bosy)
+  const savingsAmount = (subtotal * discountPercent) / 100;
+  const grandTotal = subtotal + shippingCost + taxAmount - savingsAmount;
+
+  const handleBackNavigation = () => {
+    const fromCart = location.state?.from === '/cart' || document.referrer.includes('/cart');
+    if (fromCart) {
+      navigate('/cart');
+    } else if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/cart');
+    }
+  };
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -51,20 +96,6 @@ export default function Checkout() {
     onSubmit: (values) => handleCheckOut(values),
   });
 
-  useEffect(() => {
-    // Simulate fetching order data
-    const fetchOrderData = async () => {
-      try {
-        // Placeholder for actual API call
-        setProductCount(3);
-        setSavingsAmount(250);
-      } catch (error) {
-        console.error('Error fetching order data:', error);
-      }
-    };
-    fetchOrderData();
-  }, []);
-
   async function handleCheckOut(formObj) {
     if (paymentMethod === 'card') {
       setLoading(true);
@@ -80,7 +111,7 @@ export default function Checkout() {
         if (response?.data?.session?.url) {
           location.href = response.data.session.url;
         } else {
-          throw new Error('Failed to create checkout session');
+          throw new Error('فشل في إنء جلسة الدفع');
         }
       } catch (error) {
         console.error('Checkout error:', error);
@@ -137,12 +168,11 @@ export default function Checkout() {
     setCouponLoading(true);
     setCouponError('');
     setCouponSuccess('');
-    setCouponMessage('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 800));
       const couponInput = document.querySelector(`.${styles.couponInput}`);
-      const code = couponInput?.value || '';
+      const code = couponInput?.value?.trim() || '';
 
       if (!code) {
         setCouponError('⚠️ يرجى إدخال كود الخصم');
@@ -150,17 +180,15 @@ export default function Checkout() {
         return;
       }
 
-      if (code === 'DISCOUNT10') {
-        setCouponSuccess('✅ تم تطبيق الخصم بنجاح! خصم 10%');
-        setCouponMessage('تم تطبيق الخصم بنجاح!');
-        setSavingsAmount(450);
-      } else if (code === 'SAVE20') {
-        setCouponSuccess('✅ تم تطبيق الخصم بنجاح! خصم 20%');
-        setCouponMessage('تم تطبيق الخصم بنجاح!');
-        setSavingsAmount(900);
+      // التحقق من كود الخصم الجديد وكواد إضافية
+      if (code.toLowerCase() === 'ahmed love bosy') {
+        setDiscountPercent(50); // خصم 50% (نصف المبلغ)
+        setCouponSuccess('✅ تم تطبيق خصم 50% بنجاح!');
+      } else if (code === 'DISCOUNT10' || code === 'SAVE20') {
+        setDiscountPercent(20);
+        setCouponSuccess('✅ تم تطبيق الخصم بنجاح!');
       } else {
         setCouponError('❌ كود الخصم غير صحيح');
-        setSavingsAmount(0);
       }
     } catch (error) {
       setCouponError('❌ حدث خطأ في تطبيق الكود');
@@ -178,6 +206,7 @@ export default function Checkout() {
       case 'building': return <FaBuilding className={styles.inputIcon} />;
       case 'floor': return <FaLayerGroup className={styles.inputIcon} />;
       case 'apartment': return <FaDoorOpen className={styles.inputIcon} />;
+      case 'notes': return <FaStickyNote className={styles.inputIcon} />;
       default: return null;
     }
   };
@@ -190,7 +219,8 @@ export default function Checkout() {
       details: 'تفاصيل العنوان',
       building: 'المبنى',
       floor: 'الدور',
-      apartment: 'الشقة'
+      apartment: 'الشقة',
+      notes: 'ملاحظات الطلب (اختياري)'
     };
     return labels[fieldName] || fieldName;
   };
@@ -220,11 +250,22 @@ export default function Checkout() {
       <div className={styles.pageWrapper}>
         <div className={styles.glowCircle1}></div>
         <div className={styles.glowCircle2}></div>
-        <form className={styles.Checkout} onSubmit={checkoutForm.handleSubmit}>
-          <div className={styles.checkoutLayout}>
+        <div className={styles.Checkout}>
+          <div className={styles.topBarWrapper}>
+            <button 
+              type="button" 
+              className={styles.backButton} 
+              onClick={handleBackNavigation}
+            >
+              <FaArrowLeft className={styles.backIcon} />
+              <span>العودة إلى السلة</span>
+            </button>
+          </div>
+          <form onSubmit={checkoutForm.handleSubmit}>
+            <div className={styles.checkoutLayout}>
             <div className={styles.leftColumn}>
               <div className={styles.glassCard}>
-                <h3 className={styles.sectionTitle}><FaTruck /> تفاصيل الشحن</h3>
+                <h3 className={styles.sectionTitle}><FaTruck /> معلومات الشحن والتواصل</h3>
                 <div className={styles.formGrid}>
                   {['name', 'phone', 'city', 'details', 'building', 'floor', 'apartment'].map((field) => (
                     <div className={styles.inputWrapper} key={field}>
@@ -260,6 +301,27 @@ export default function Checkout() {
                       )}
                     </div>
                   ))}
+                  
+                  {/* Notes (optional) field spanning full width */}
+                  <div className={`${styles.inputWrapper} ${styles.fullWidthField}`}>
+                    <div className={styles.inputContainer}>
+                      <span className={styles.inputIconWrapper}>{getFieldIcon('notes')}</span>
+                      <input 
+                        name="notes"
+                        type="text"
+                        autoComplete="off"
+                        className={`${styles.formInput} ${checkoutForm.touched.notes && checkoutForm.values.notes ? styles.inputSuccess : ''}`}
+                        placeholder=" " 
+                        onChange={checkoutForm.handleChange} 
+                        onBlur={checkoutForm.handleBlur} 
+                        value={checkoutForm.values.notes} 
+                        disabled={loading}
+                      />
+                      <label className={styles.floatingLabel}>
+                        {getFieldLabel('notes')}
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -325,7 +387,7 @@ export default function Checkout() {
                     <div className={styles.vcashInstructions}>
                       <p className={styles.instructions}>📱 يرجى تحويل المبلغ للرقم الموضح بعد تأكيد الطلب</p>
                       <p className={styles.instructions}>⏳ سيتم تأكيد الطلب خلال 24 ساعة من استلام الدفعة</p>
-                      <p className={styles.instructions}>💰 المبلغ المطلوب: {(orderTotal + shippingCost + taxAmount - savingsAmount).toFixed(2)} ج.م</p>
+                      <p className={styles.instructions}>💰 المبلغ المطلوب: {grandTotal.toFixed(2)} ج.م</p>
                     </div>
                   </div>
                 )}
@@ -341,7 +403,7 @@ export default function Checkout() {
                     <div className={styles.summaryItem}>
                       <FaBox className={styles.summaryIcon} />
                       <span>عدد المنتجات</span>
-                      <span className={styles.summaryValue}>{productCount}</span>
+                      <span className={styles.summaryValue}>{totalItems}</span>
                     </div>
                     <div className={styles.summaryItem}>
                       <FaShippingFast className={styles.summaryIcon} />
@@ -352,7 +414,7 @@ export default function Checkout() {
                       <div className={`${styles.summaryItem} ${styles.savingsItem}`}>
                         <FaGift className={styles.summaryIcon} />
                         <span>وفّرت</span>
-                        <span className={styles.savingsValue}>{savingsAmount} ج.م</span>
+                        <span className={styles.savingsValue}>{savingsAmount.toFixed(2)} ج.م</span>
                       </div>
                     )}
                   </div>
@@ -385,26 +447,24 @@ export default function Checkout() {
                   )}
                   <div className={styles.priceSummaryLines}>
                     <div className={styles.summaryLine}>
-                      <span>الإجمالي</span>
-                      <span>{orderTotal.toFixed(2)} ج.م</span>
+                      <span>إجمالي المنتجات</span>
+                      <span>{subtotal.toFixed(2)} ج.م</span>
                     </div>
                     <div className={styles.summaryLine}>
                       <span>الشحن</span>
-                      <span>{shippingCost.toFixed(2)} ج.م</span>
+                      <span style={{ color: '#34d399', fontWeight: '600' }}>مجاني</span>
                     </div>
                     <div className={styles.summaryLine}>
                       <span>الضرائب</span>
                       <span>{taxAmount.toFixed(2)} ج.م</span>
                     </div>
-                    {savingsAmount > 0 && (
-                      <div className={`${styles.summaryLine} ${styles.discountLine}`}>
-                        <span>الخصم</span>
-                        <span>-{savingsAmount.toFixed(2)} ج.م</span>
-                      </div>
-                    )}
+                    <div className={`${styles.summaryLine} ${styles.discountLine}`}>
+                      <span>الخصومات</span>
+                      <span>-{savingsAmount.toFixed(2)} ج.م</span>
+                    </div>
                     <div className={styles.grandTotalLine}>
-                      <span>الإجمالي الكلي</span>
-                      <span>{(orderTotal + shippingCost + taxAmount - savingsAmount).toFixed(2)} ج.م</span>
+                      <span>الإجمالي النهائي</span>
+                      <span>{grandTotal.toFixed(2)} ج.م</span>
                     </div>
                   </div>
                   <button 
@@ -435,7 +495,8 @@ export default function Checkout() {
               </div>
             </div>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </>
   )

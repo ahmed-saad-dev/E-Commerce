@@ -427,6 +427,19 @@
   color: #fff;
 }
 
+.cartBadge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 .cartLabel {
   font-size: 13px;
   font-weight: 700;
